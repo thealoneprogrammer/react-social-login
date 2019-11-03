@@ -2,7 +2,6 @@ import React from "react";
 import "./App.css";
 import firebase from "firebase";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
-import { black } from "ansi-colors";
 
 firebase.initializeApp({
   apiKey: "AIzaSyAOkjrqYhOasG0xnCpRV0I6fthMxPYFUN0",
