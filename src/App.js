@@ -1,26 +1,59 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
+import firebase from "firebase";
+import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
+import { black } from "ansi-colors";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+firebase.initializeApp({
+  apiKey: "AIzaSyAOkjrqYhOasG0xnCpRV0I6fthMxPYFUN0",
+  authDomain: "react-social-logins.firebaseapp.com"
+});
+
+class App extends React.Component {
+  state = {
+    isSignedIn: false
+  };
+  uiConfig = {
+    signInFlow: "popup",
+    signInOptions: [
+      firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+      firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+      firebase.auth.GithubAuthProvider.PROVIDER_ID
+    ],
+    callbacks: {
+      signInSuccessWithAuthResult: () => false
+    }
+  };
+
+  componentDidMount = () => {
+    firebase.auth().onAuthStateChanged(user => {
+      this.setState({ isSignedIn: !!user });
+    });
+  };
+  render() {
+    return (
+      <div className="App">
+        {this.state.isSignedIn ? (
+          <div>
+            <button
+              style={{ float: "right" }}
+              onClick={() => firebase.auth().signOut()}
+            >
+              Sign Out
+            </button>
+            <h3>Welcome {firebase.auth().currentUser.displayName}</h3>
+            <img src={firebase.auth().currentUser.photoURL} alt="profile" />
+            <h4>Email Address: {firebase.auth().currentUser.email}</h4>
+          </div>
+        ) : (
+          <StyledFirebaseAuth
+            uiConfig={this.uiConfig}
+            firebaseAuth={firebase.auth()}
+          />
+        )}
+      </div>
+    );
+  }
 }
 
 export default App;
